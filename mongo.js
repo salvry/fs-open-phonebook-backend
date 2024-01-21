@@ -14,21 +14,25 @@ mongoose.connect(url)
   })
 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {type: String, required: true},
+  number: {type: String, required: true}
 })
 
 const Person = mongoose.model('Person', personSchema)
 
-const person = new Person({name: process.argv[2], number: process.argv[3]})
-
-person.save().then(() => {
-  console.log('person saved')
-  mongoose.connection.close()
-})
-Person.find({}).then(result => {
-  result.forEach(note => {
-    console.log(note)
+if(process.argv.length === 4){
+  const Person = mongoose.model('Person', personSchema)
+  const person = new Person({name: process.argv[2], number: process.argv[3]})
+  person.save().then(() => {
+    console.log('person saved!')
+    mongoose.connection.close()
   })
-  mongoose.connection.close()
-})
+}
+else{
+  Person.find({}).then(result => {
+    result.forEach(note => {
+      console.log(note)
+    })
+    mongoose.connection.close()
+  })
+}
